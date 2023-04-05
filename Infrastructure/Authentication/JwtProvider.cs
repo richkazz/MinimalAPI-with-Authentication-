@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions;
 using Domain.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,9 +16,11 @@ namespace Infrastructure.Authentication
     public class JwtProvider : IJwtProvider
     {
         private readonly JwtOptions _jwtOptions;
-        public JwtProvider(IOptions<JwtOptions> options)
+        private readonly ILogger<JwtProvider> _logger;
+        public JwtProvider(IOptions<JwtOptions> options, ILogger<JwtProvider> logger)
         {
             _jwtOptions = options.Value;
+            _logger = logger;
         }
         public string Generate(Login login)
         {
@@ -40,7 +43,7 @@ namespace Infrastructure.Authentication
                 signingCredentials
                 );
             var stringToken = new JwtSecurityTokenHandler().WriteToken(token);
-
+            _logger.LogInformation("Token created");
             return stringToken;
         }
     }

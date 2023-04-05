@@ -11,7 +11,7 @@ namespace MinimalApi.Filiters
             if (string.IsNullOrEmpty(register.Email) 
                 || string.IsNullOrEmpty(register.UserName)
                 || string.IsNullOrEmpty(register.Password)
-                || !IsEmail(register.Email))
+                || !IsEmail(register.Email.Trim()))
                 return await Task.FromResult(Results.BadRequest("Register not valid"));
 
             return await next(context);

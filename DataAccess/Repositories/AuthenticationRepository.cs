@@ -1,6 +1,8 @@
 ﻿using Application.Abstractions;
+using DataAccess.DataAccessException.AuthenticationException;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccess.Repositories
 {
@@ -11,11 +13,13 @@ namespace DataAccess.Repositories
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IJwtProvider _jwtProvider;
+        private readonly ILogger<AuthenticationRepository> _logger;
         public AuthenticationRepository(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
-            IJwtProvider jwtProvider
+            IJwtProvider jwtProvider,
+            ILogger<AuthenticationRepository> logger
             )
         {
             _userManager = userManager;
@@ -23,16 +27,17 @@ namespace DataAccess.Repositories
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _jwtProvider = jwtProvider;
+            _logger = logger;
         }
 
         public async Task<IdentityResult> CreateAccount(Register register)
         {
             var user = CreateUser();
-            await _userStore.SetUserNameAsync(user, register.Email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, register.Email, CancellationToken.None);
-            user.UserName = register.UserName;
+            await _userStore.SetUserNameAsync(user, register.Email!.Trim(), CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, register.Email!.Trim(), CancellationToken.None);
+            user.UserName = register.UserName!.Trim();
             user.EmailConfirmed = true;
-            var result = await _userManager.CreateAsync(user, register.Password!);
+            var result = await _userManager.CreateAsync(user, register.Password!.Trim());
             return result;
         }
 
@@ -41,9 +46,11 @@ namespace DataAccess.Repositories
             var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, true, lockoutOnFailure: false);
             if (result.Succeeded)
             {
+                _logger.LogInformation("Login successful");
                 return _jwtProvider.Generate(login);
             }
-            return "Invalid login attempt";
+            _logger.LogInformation("Invalid login attempt");
+            throw new LoginException("Invalid login attempt");
         }
 
         private IdentityUser CreateUser()

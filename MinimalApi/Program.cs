@@ -1,5 +1,6 @@
 using Application.Posts.Commands;
 using Application.Posts.Queries;
+using DataAccess.DataAccessException.AuthenticationException;
 using Domain.Models;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -11,17 +12,13 @@ builder.RegisterServices();
 
 var app = builder.Build();
 
-app.Use(async (ctx, next) =>
+app.RegisterExecption();
+
+app.UseCors(builder =>
 {
-    try
-    {
-        await next();
-    }
-    catch (Exception)
-    {
-        ctx.Response.StatusCode = 500;
-        await ctx.Response.WriteAsync("An error ocurred");
-    }
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
 });
 
 app.UseAuthentication();

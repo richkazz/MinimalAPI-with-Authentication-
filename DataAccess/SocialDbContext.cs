@@ -15,7 +15,8 @@ namespace DataAccess
         {
 
         }
-
+        
         public DbSet<Post> Posts { get; set; }
+        public DbSet<ActiveSchoolTerm> ActiveSchoolTerms { get; set; }
     }
 }

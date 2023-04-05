@@ -11,6 +11,9 @@ using MinimalApi.OptionsSetup;
 using Infrastructure.Authentication;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DataAccess.DataAccessException.AuthenticationException;
+using Microsoft.AspNetCore.Http;
+using DataAccess.DataAccessException;
 
 namespace MinimalApi.Extensions
 {
@@ -25,8 +28,17 @@ namespace MinimalApi.Extensions
                 .AddEntityFrameworkStores<SocialDbContext>()
                 .AddDefaultTokenProviders();
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreatePost).GetTypeInfo().Assembly));
-            
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
             builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IActiveSchoolTermRepository, ActiveSchoolTermRepository>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
             ConfigureAuthentication(builder.Services,builder);
@@ -69,5 +81,34 @@ namespace MinimalApi.Extensions
                 endpointDef.RegisterEndpoints(app);
             }
         }
+
+        public static void RegisterExecption(this WebApplication app)
+        {
+            app.Use(async (ctx, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                catch (AuthenticationException e)
+                {
+                    ctx.Response.StatusCode = 401;
+                    await ctx.Response.WriteAsJsonAsync(new { error = "Invalid username or password" });
+                }
+                catch (ActiveSchoolTermException e)
+                {
+                    ctx.Response.StatusCode = 401;
+                    await ctx.Response.WriteAsJsonAsync(new { error =e.Message });
+                }
+
+                catch (Exception)
+                {
+                    ctx.Response.StatusCode = 500;
+                    await ctx.Response.WriteAsync("An error ocurred");
+                }
+            });
+        }
+
+
     }
 }

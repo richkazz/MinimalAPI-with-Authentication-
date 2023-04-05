@@ -8,6 +8,8 @@ using MinimalApi.Filiters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static Azure.Core.HttpHeader;
+using DataAccess.DataAccessException.AuthenticationException;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MinimalApi.EndpointDefinitions
 {
@@ -23,19 +25,19 @@ namespace MinimalApi.EndpointDefinitions
         }
         private async Task<IResult> SignIn(IMediator mediator, Login login)
         {
-            var createLogin = new PasswordSignIn 
-            { 
-                Password = login.Password,
-                UserName = login.UserName
-            };
-            var token = await mediator.Send(createLogin);
-            if (string.IsNullOrEmpty(token))
+            try
             {
-                return TypedResults.Problem(token);
-            }
-            else
-            {
+                var createLogin = new PasswordSignIn
+                {
+                    Password = login.Password,
+                    UserName = login.UserName
+                };
+                var token = await mediator.Send(createLogin);
                 return TypedResults.Ok(token);
+            }
+            catch(LoginException e)
+            {
+                throw new AuthenticationException(e.Message,e.InnerException);
             }
             
         }
@@ -54,9 +56,10 @@ namespace MinimalApi.EndpointDefinitions
             }
             else
             {
-                return Results.Problem(JsonSerializer.Serialize(createdRegister.Errors));
+                var errors = createdRegister.Errors.Select(e => e.Description);
+                return Results.BadRequest(new { Errors = errors });
             }
-            
+
         }
 
     }
