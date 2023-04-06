@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SocialDbContext))]
-    partial class SocialDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230406215106_JuniorSchoolSubject_and_SeniorSchoolSubject_model")]
+    partial class JuniorSchoolSubject_and_SeniorSchoolSubject_model
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,22 +41,6 @@ namespace DataAccess.Migrations
                     b.ToTable("ActiveSchoolTerms");
                 });
 
-            modelBuilder.Entity("Domain.Models.CurrentGradingSystem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GradingSystem")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CurrentGradingSystems");
-                });
-
             modelBuilder.Entity("Domain.Models.JuniorSchoolSubject", b =>
                 {
                     b.Property<int>("Id")
@@ -69,7 +56,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("JuniorSchoolSubjects");
+                    b.ToTable("JuniorSchoolSubject");
                 });
 
             modelBuilder.Entity("Domain.Models.Post", b =>
@@ -133,7 +120,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SeniorSchoolSubjects");
+                    b.ToTable("SeniorSchoolSubject");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

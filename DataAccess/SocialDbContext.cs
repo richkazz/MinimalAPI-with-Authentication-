@@ -1,9 +1,11 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,5 +20,60 @@ namespace DataAccess
         
         public DbSet<Post> Posts { get; set; }
         public DbSet<ActiveSchoolTerm> ActiveSchoolTerms { get; set; }
+        public DbSet<SchoolSubjects> SchoolSubjects { get; set; }
+        public DbSet<CurrentGradingSystem> CurrentGradingSystems { get; set; }
+        public DbSet<JuniorSchoolSubject> JuniorSchoolSubjects { get; set; }
+        public DbSet<SeniorSchoolSubject> SeniorSchoolSubjects { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<JuniorSchoolSubject>(ConfigureJuniorSchoolSubject);
+            builder.Entity<SeniorSchoolSubject>(ConfigureSeniorSchoolSubject);
+            builder.Entity<SchoolSubjects>(ConfigureSchoolSubjects);
+            base.OnModelCreating(builder);
+        }
+
+        private void ConfigureSchoolSubjects(EntityTypeBuilder<SchoolSubjects> entity)
+        {
+
+            entity.ToTable("SchoolSubjects");
+
+            entity.HasIndex(e => e.Subjects)
+                .IsUnique();
+
+            entity.Property(e => e.Subjects)
+                .IsRequired()
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("Subjects")
+                .IsFixedLength();
+        }
+        private void ConfigureJuniorSchoolSubject(EntityTypeBuilder<JuniorSchoolSubject> entity)
+        {
+
+            entity.HasOne(d => d.SchoolSubjects)
+                 .WithMany()
+                 .HasForeignKey(d => d.SubjectId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.SchoolSubjects)
+                .WithMany()
+                .HasForeignKey(d => d.SubjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        }
+         private void ConfigureSeniorSchoolSubject(EntityTypeBuilder<SeniorSchoolSubject> entity)
+        {
+
+            entity.HasOne(d => d.SchoolSubjects)
+                 .WithMany()
+                 .HasForeignKey(d => d.SubjectId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.SchoolSubjects)
+                .WithMany()
+                .HasForeignKey(d => d.SubjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        }
+
     }
 }

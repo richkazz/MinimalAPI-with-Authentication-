@@ -37,6 +37,7 @@ namespace MinimalApi.Extensions
                            .AllowAnyMethod();
                 });
             });
+            builder.Services.AddScoped<ISchoolSubjectsRepository, SchoolSubjectsRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IActiveSchoolTermRepository, ActiveSchoolTermRepository>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
@@ -96,6 +97,11 @@ namespace MinimalApi.Extensions
                     await ctx.Response.WriteAsJsonAsync(new { error = "Invalid username or password" });
                 }
                 catch (ActiveSchoolTermException e)
+                {
+                    ctx.Response.StatusCode = 401;
+                    await ctx.Response.WriteAsJsonAsync(new { error =e.Message });
+                }
+                catch (SchoolSubjectException e)
                 {
                     ctx.Response.StatusCode = 401;
                     await ctx.Response.WriteAsJsonAsync(new { error =e.Message });
