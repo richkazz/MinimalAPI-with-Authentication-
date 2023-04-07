@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AdminSetting\**" />
+    <EmbeddedResource Remove="AdminSetting\**" />
+    <None Remove="AdminSetting\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="12.0.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.4" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿namespace DataAccess.DataAccessException
 {
-    public class CurrentGradingSystemException:Exception
+    public class CurrentGradingSystemException: DataAccessException
     {
         public CurrentGradingSystemException()
         {

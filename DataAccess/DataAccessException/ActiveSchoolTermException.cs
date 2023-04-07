@@ -1,6 +1,6 @@
 ﻿namespace DataAccess.DataAccessException
 {
-    public class ActiveSchoolTermException:Exception
+    public class ActiveSchoolTermException: DataAccessException
     {
         public ActiveSchoolTermException()
         {

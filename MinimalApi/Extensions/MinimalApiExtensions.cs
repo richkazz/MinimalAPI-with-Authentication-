@@ -14,6 +14,7 @@ using System.Text;
 using DataAccess.DataAccessException.AuthenticationException;
 using Microsoft.AspNetCore.Http;
 using DataAccess.DataAccessException;
+using Domain.Models;
 
 namespace MinimalApi.Extensions
 {
@@ -21,7 +22,7 @@ namespace MinimalApi.Extensions
     {
         public static void RegisterServices(this WebApplicationBuilder builder)
         {
-            
+
             var cs = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<SocialDbContext>(opt => opt.UseSqlServer(cs));
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -37,13 +38,23 @@ namespace MinimalApi.Extensions
                            .AllowAnyMethod();
                 });
             });
-            builder.Services.AddScoped<ISchoolSubjectsRepository, SchoolSubjectsRepository>();
-            builder.Services.AddScoped<IPostRepository, PostRepository>();
-            builder.Services.AddScoped<IActiveSchoolTermRepository, ActiveSchoolTermRepository>();
-            builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-            ConfigureAuthentication(builder.Services,builder);
+            RegisterRepositories(builder.Services);
+            ConfigureAuthentication(builder.Services, builder);
         }
+
+        private static void RegisterRepositories(IServiceCollection services)
+        {
+            services.AddScoped<ICurrentGradingSystemRepository, CurrentGradingSystemRepository>();
+            services.AddScoped<IAdminSettingRepository, AdminSettingRepository>();
+            services.AddScoped<ISchoolSubjectsRepository, SchoolSubjectsRepository>();
+            services.AddScoped<IJuniorSchoolSubjectRepository, JuniorSchoolSubjectRepository>();
+            services.AddScoped<ISeniorSchoolSubjectRepository, SeniorSchoolSubjectRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IActiveSchoolTermRepository, ActiveSchoolTermRepository>();
+            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IJwtProvider, JwtProvider>();
+        }
+
         private static void ConfigureAuthentication(IServiceCollection services, WebApplicationBuilder builder)
         {
             services.AddAuthentication(config =>
@@ -91,22 +102,18 @@ namespace MinimalApi.Extensions
                 {
                     await next();
                 }
-                catch (AuthenticationException e)
+                catch (DataAccessException e)
                 {
-                    ctx.Response.StatusCode = 401;
-                    await ctx.Response.WriteAsJsonAsync(new { error = "Invalid username or password" });
+                    var errorResponse = new ErrorResponse()
+                    {
+                        StatusCode = 400,
+                        StatusPharase = "Bad request",
+                        TimeStamp = DateTime.Now
+                    };
+                    errorResponse.Errors.Add(e.Message);
+                    ctx.Response.StatusCode = 400;
+                    await ctx.Response.WriteAsJsonAsync(errorResponse);
                 }
-                catch (ActiveSchoolTermException e)
-                {
-                    ctx.Response.StatusCode = 401;
-                    await ctx.Response.WriteAsJsonAsync(new { error =e.Message });
-                }
-                catch (SchoolSubjectException e)
-                {
-                    ctx.Response.StatusCode = 401;
-                    await ctx.Response.WriteAsJsonAsync(new { error =e.Message });
-                }
-
                 catch (Exception)
                 {
                     ctx.Response.StatusCode = 500;

@@ -37,7 +37,7 @@ namespace MinimalApi.EndpointDefinitions
             }
             catch(LoginException e)
             {
-                throw new AuthenticationException(e.Message,e.InnerException);
+                throw new AuthenticationException(e.Message);
             }
             
         }
@@ -56,8 +56,14 @@ namespace MinimalApi.EndpointDefinitions
             }
             else
             {
-                var errors = createdRegister.Errors.Select(e => e.Description);
-                return Results.BadRequest(new { Errors = errors });
+                var errorResponse = new ErrorResponse()
+                {
+                    StatusCode = 400,
+                    StatusPharase = "Bad Request",
+                    TimeStamp = DateTime.Now
+                };
+                errorResponse.Errors.AddRange(createdRegister.Errors.Select(e => e.Description));
+                return Results.BadRequest(errorResponse);
             }
 
         }

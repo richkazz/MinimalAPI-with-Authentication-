@@ -63,5 +63,4 @@ namespace MinimalApi.EndpointDefinitions
             return TypedResults.NoContent();
         }
     }
-
 }

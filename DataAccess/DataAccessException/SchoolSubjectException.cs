@@ -1,6 +1,6 @@
 ﻿namespace DataAccess.DataAccessException
 {
-    public class SchoolSubjectException:Exception
+    public class SchoolSubjectException: DataAccessException
     {
         public SchoolSubjectException()
         {

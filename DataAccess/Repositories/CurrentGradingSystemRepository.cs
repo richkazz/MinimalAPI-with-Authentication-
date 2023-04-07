@@ -23,6 +23,11 @@ namespace DataAccess.Repositories
             try
             {
                 _logger.LogInformation("Creating Current grading system with ID {Id}.", gradingSystem.Id);
+                if (_context.CurrentGradingSystems.Any())
+                {
+                    _logger.LogInformation("CurrentGradingSystem already exist");
+                    return gradingSystem;
+                }
                 _context.CurrentGradingSystems.Add(gradingSystem);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Current grading system with ID {Id} created.", gradingSystem.Id);

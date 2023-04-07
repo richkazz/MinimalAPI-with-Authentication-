@@ -32,25 +32,54 @@ namespace DataAccess.Repositories
 
         public async Task<IdentityResult> CreateAccount(Register register)
         {
-            var user = CreateUser();
-            await _userStore.SetUserNameAsync(user, register.Email!.Trim(), CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, register.Email!.Trim(), CancellationToken.None);
-            user.UserName = register.UserName!.Trim();
-            user.EmailConfirmed = true;
-            var result = await _userManager.CreateAsync(user, register.Password!.Trim());
-            return result;
+            try
+            {
+                var user = CreateUser();
+                await _userStore.SetUserNameAsync(user, register.Email!.Trim(), CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, register.Email!.Trim(), CancellationToken.None);
+                user.UserName = register.UserName!.Trim();
+                user.EmailConfirmed = true;
+                var result = await _userManager.CreateAsync(user, register.Password!.Trim());
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"User '{user.UserName}' created an account with password.");
+                }
+                else
+                {
+                    _logger.LogWarning($"Failed to create account for user '{user.UserName}'. Errors: {string.Join(", ", result.Errors)}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error creating account for user '{register.UserName}'.");
+                throw new RegisterException($"Error creating account for user '{register.UserName}'.", ex);
+            }
         }
 
         public async Task<string> PasswordSignIn(Login login)
         {
-            var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, true, lockoutOnFailure: false);
-            if (result.Succeeded)
+            try
             {
-                _logger.LogInformation("Login successful");
-                return _jwtProvider.Generate(login);
+                var result = await _signInManager.PasswordSignInAsync(login.UserName, login.Password, true, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"User '{login.UserName}' logged in successfully.");
+                    return _jwtProvider.Generate(login);
+                }
+                else
+                {
+                    _logger.LogWarning($"Failed login attempt for user '{login.UserName}'.");
+                    throw new LoginException("Invalid login attempt");
+                }
             }
-            _logger.LogInformation("Invalid login attempt");
-            throw new LoginException("Invalid login attempt");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error logging in user '{login.UserName}'.");
+                throw new LoginException($"Error logging in user '{login.UserName}'.", ex);
+            }
         }
 
         private IdentityUser CreateUser()

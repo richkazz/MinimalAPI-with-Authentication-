@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataAccess.DataAccessException.AuthenticationException
+﻿namespace DataAccess.DataAccessException.AuthenticationException
 {
-    public class AuthenticationException : Exception
+    public class AuthenticationException : DataAccessException
     {
         public AuthenticationException()
         {
