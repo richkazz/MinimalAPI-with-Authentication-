@@ -3,6 +3,7 @@ using Application.AdminSettings.Queries;
 using Domain.Models;
 using MediatR;
 using MinimalApi.Abstractions;
+using MinimalApi.Filiters;
 
 namespace MinimalApi.EndpointDefinitions
 {
@@ -13,8 +14,8 @@ namespace MinimalApi.EndpointDefinitions
             var adminSettings = app.MapGroup("/api/adminsettings");
             adminSettings.MapGet("/", GetAdminSettings)
                 .WithName("GetAdminSettings");
-            adminSettings.MapPut("/", UpdateAdminSettings);
-            adminSettings.MapPost("/", CreateAdminSettings);
+            adminSettings.MapPut("/", UpdateAdminSettings).AddEndpointFilter<AdminSettingFilters>();
+            adminSettings.MapPost("/", CreateAdminSettings).AddEndpointFilter<AdminSettingFilters>();
         }
 
         private async Task<IResult> GetAdminSettings(IMediator mediator)
