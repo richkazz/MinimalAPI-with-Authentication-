@@ -13,10 +13,12 @@ namespace DataAccess.Repositories
         private readonly ICurrentGradingSystemRepository _currentGradingSystemRepository;
         private readonly IJuniorSchoolSubjectRepository _juniorSchoolSubjectRepository;
         private readonly ISeniorSchoolSubjectRepository _seniorSchoolSubjectRepository;
+        private readonly IClassInSchoolRepository _classInSchoolRepository;
 
         public AdminSettingRepository(SocialDbContext dbContext, ILogger<AdminSettingRepository> logger,
             ICurrentGradingSystemRepository currentGradingSystemRepository,
             IJuniorSchoolSubjectRepository juniorSchoolSubjectRepository,
+            IClassInSchoolRepository classInSchoolRepository,
             ISeniorSchoolSubjectRepository seniorSchoolSubjectRepository)
         {
             _dbContext = dbContext;
@@ -24,6 +26,7 @@ namespace DataAccess.Repositories
             _currentGradingSystemRepository = currentGradingSystemRepository;
             _juniorSchoolSubjectRepository = juniorSchoolSubjectRepository;
             _seniorSchoolSubjectRepository = seniorSchoolSubjectRepository;
+            _classInSchoolRepository = classInSchoolRepository;
         }
 
         public async Task CreateAdminSettingAsync(AdminSetting? adminSetting)
@@ -42,6 +45,8 @@ namespace DataAccess.Repositories
                 await _juniorSchoolSubjectRepository.CreateRangeAsync(adminSetting.JuniorSchoolSubjects!);
 
                 await _seniorSchoolSubjectRepository.CreateRangeAsync(adminSetting.SeniorSchoolSubjects!);
+
+                await _classInSchoolRepository.AddRangeAsync(adminSetting.ClassInSchools);
 
                 await transaction.CommitAsync();
                 // await _dbContext.SaveChangesAsync();
@@ -67,7 +72,8 @@ namespace DataAccess.Repositories
                 {
                     CurrentGradingSystems = await _currentGradingSystemRepository.GetFirst(),
                     JuniorSchoolSubjects = await _juniorSchoolSubjectRepository.GetAllAsync(),
-                    SeniorSchoolSubjects = await _seniorSchoolSubjectRepository.GetAllAsync()
+                    SeniorSchoolSubjects = await _seniorSchoolSubjectRepository.GetAllAsync(),
+                    ClassInSchools = await _classInSchoolRepository.GetAllAsync()
                 };
 
                 return adminSetting;

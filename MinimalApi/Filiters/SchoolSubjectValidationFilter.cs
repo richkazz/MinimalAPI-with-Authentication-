@@ -9,7 +9,16 @@ namespace MinimalApi.Filiters
         {
             var schoolSubjects = context.GetArgument<SchoolSubjects>(1);
             if (string.IsNullOrEmpty(schoolSubjects.Subjects))
-                return await Task.FromResult(Results.BadRequest("Subject not valid"));
+            {
+                var errorResponse = new ErrorResponse()
+                {
+                    StatusCode = 400,
+                    StatusPharase = "Bad request",
+                    TimeStamp = DateTime.Now
+                };
+                errorResponse.Errors.Add("Subject not valid");
+                return await Task.FromResult(Results.BadRequest(errorResponse));
+            }
 
             return await next(context);
         }

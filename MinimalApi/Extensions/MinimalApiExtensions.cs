@@ -44,6 +44,7 @@ namespace MinimalApi.Extensions
 
         private static void RegisterRepositories(IServiceCollection services)
         {
+            services.AddScoped<IClassInSchoolRepository, ClassInSchoolRepository>();
             services.AddScoped<ICurrentGradingSystemRepository, CurrentGradingSystemRepository>();
             services.AddScoped<IAdminSettingRepository, AdminSettingRepository>();
             services.AddScoped<ISchoolSubjectsRepository, SchoolSubjectsRepository>();

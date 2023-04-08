@@ -12,7 +12,16 @@ namespace MinimalApi.Filiters
                 || string.IsNullOrEmpty(register.UserName)
                 || string.IsNullOrEmpty(register.Password)
                 || !IsEmail(register.Email.Trim()))
-                return await Task.FromResult(Results.BadRequest("Register not valid"));
+            {
+                var errorResponse = new ErrorResponse()
+                {
+                    StatusCode = 400,
+                    StatusPharase = "Bad request",
+                    TimeStamp = DateTime.Now
+                };
+                errorResponse.Errors.Add("Register not valid");
+                return await Task.FromResult(Results.BadRequest(errorResponse));
+            }
 
             return await next(context);
         }

@@ -60,7 +60,7 @@ namespace MinimalApi.EndpointDefinitions
         {
             
             await mediator.Send(new DeleteSchoolSubjectsCommand { Id = id });
-            return TypedResults.NoContent();
+            return TypedResults.Ok();
         }
     }
 }

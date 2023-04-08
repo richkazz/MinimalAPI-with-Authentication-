@@ -52,7 +52,7 @@ namespace MinimalApi.EndpointDefinitions
             var createdRegister = await mediator.Send(createRegister);
             if (createdRegister.Succeeded)
             {
-                return TypedResults.NoContent();
+                return TypedResults.Ok();
             }
             else
             {

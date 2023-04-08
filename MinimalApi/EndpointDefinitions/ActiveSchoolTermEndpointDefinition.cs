@@ -47,7 +47,7 @@ namespace MinimalApi.EndpointDefinitions
                 ActiveTerm = activeSchoolTerm.ActiveTerm
             };
             var updatedActiveSchoolTerm = await mediator.Send(command);
-            return TypedResults.NoContent();
+            return TypedResults.Ok(); ;
         }
     }
 
