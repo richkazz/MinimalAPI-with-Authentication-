@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SocialDbContext))]
-    partial class SocialDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230421112300_Teacher_model_changed_4")]
+    partial class Teacher_model_changed_4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -449,7 +452,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Domain.Models.SubjectTeaching", b =>
                 {
                     b.HasOne("Domain.Models.SchoolSubjects", "SchoolSubjects")
-                        .WithMany("SubjectTeaching")
+                        .WithMany()
                         .HasForeignKey("SchoolSubjectsId")
                         .IsRequired();
 
@@ -512,11 +515,6 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Models.SchoolSubjects", b =>
-                {
-                    b.Navigation("SubjectTeaching");
                 });
 
             modelBuilder.Entity("Domain.Models.Teacher", b =>

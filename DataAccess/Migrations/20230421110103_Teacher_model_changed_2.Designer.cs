@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SocialDbContext))]
-    partial class SocialDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230421110103_Teacher_model_changed_2")]
+    partial class Teacher_model_changed_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,9 +177,14 @@ namespace DataAccess.Migrations
                     b.Property<int>("SchoolTeacherId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolSubjectsId");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("SubjectTeachings");
                 });
@@ -449,18 +457,15 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Domain.Models.SubjectTeaching", b =>
                 {
                     b.HasOne("Domain.Models.SchoolSubjects", "SchoolSubjects")
-                        .WithMany("SubjectTeaching")
+                        .WithMany()
                         .HasForeignKey("SchoolSubjectsId")
                         .IsRequired();
 
-                    b.HasOne("Domain.Models.Teacher", "Teacher")
-                        .WithMany("SubjectTeaching")
-                        .HasForeignKey("SchoolSubjectsId")
-                        .IsRequired();
+                    b.HasOne("Domain.Models.Teacher", null)
+                        .WithMany("SubjectTeachings")
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("SchoolSubjects");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -514,14 +519,9 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Models.SchoolSubjects", b =>
-                {
-                    b.Navigation("SubjectTeaching");
-                });
-
             modelBuilder.Entity("Domain.Models.Teacher", b =>
                 {
-                    b.Navigation("SubjectTeaching");
+                    b.Navigation("SubjectTeachings");
                 });
 #pragma warning restore 612, 618
         }

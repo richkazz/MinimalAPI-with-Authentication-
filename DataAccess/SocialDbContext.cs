@@ -25,6 +25,8 @@ namespace DataAccess
         public DbSet<JuniorSchoolSubject> JuniorSchoolSubjects { get; set; }
         public DbSet<SeniorSchoolSubject> SeniorSchoolSubjects { get; set; }
         public DbSet<ClassInSchool> ClassInSchools { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<SubjectTeaching> SubjectTeachings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -32,6 +34,8 @@ namespace DataAccess
             builder.Entity<SeniorSchoolSubject>(ConfigureSeniorSchoolSubject);
             builder.Entity<SchoolSubjects>(ConfigureSchoolSubjects);
             builder.Entity<ClassInSchool>(ConfigureClassInSchool);
+            builder.Entity<Teacher>(ConfigureTeacher);
+            builder.Entity<SubjectTeaching>(ConfigureSubjectTeaching);
             base.OnModelCreating(builder);
         }
 
@@ -63,10 +67,29 @@ namespace DataAccess
                 .HasColumnName("ClassName")
                 .IsFixedLength();
         }
-
-        private void ConfigureJuniorSchoolSubject(EntityTypeBuilder<JuniorSchoolSubject> entity)
+        private void ConfigureTeacher(EntityTypeBuilder<Teacher> entity)
+        {
+            entity.HasIndex(e => e.Email)
+                .IsUnique();
+        }
+        private void ConfigureSubjectTeaching(EntityTypeBuilder<SubjectTeaching> entity)
         {
 
+            entity.HasOne(d => d.SchoolSubjects)
+                 .WithMany(f=>f.SubjectTeaching)
+                 .HasForeignKey(d => d.SchoolSubjectsId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Teacher)
+                 .WithMany(f=>f.SubjectTeaching)
+                 .HasForeignKey(d => d.SchoolSubjectsId)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            
+        }
+
+        private void ConfigureJuniorSchoolSubject(EntityTypeBuilder<JuniorSchoolSubject> entity)
+         {
             entity.HasOne(d => d.SchoolSubjects)
                  .WithMany()
                  .HasForeignKey(d => d.SubjectId)
@@ -77,7 +100,8 @@ namespace DataAccess
                 .HasForeignKey(d => d.SubjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         }
-         private void ConfigureSeniorSchoolSubject(EntityTypeBuilder<SeniorSchoolSubject> entity)
+
+        private void ConfigureSeniorSchoolSubject(EntityTypeBuilder<SeniorSchoolSubject> entity)
         {
 
             entity.HasOne(d => d.SchoolSubjects)

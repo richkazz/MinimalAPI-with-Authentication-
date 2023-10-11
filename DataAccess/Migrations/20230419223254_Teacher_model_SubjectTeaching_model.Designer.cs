@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(SocialDbContext))]
-    partial class SocialDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230419223254_Teacher_model_SubjectTeaching_model")]
+    partial class Teacher_model_SubjectTeaching_model
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,20 +177,28 @@ namespace DataAccess.Migrations
                     b.Property<int>("SchoolTeacherId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolSubjectsId");
+
+                    b.HasIndex("SchoolTeacherId");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("SubjectTeachings");
                 });
 
             modelBuilder.Entity("Domain.Models.Teacher", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TeacherId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("teacherId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeacherId"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -219,7 +230,7 @@ namespace DataAccess.Migrations
                     b.Property<string>("Qualification")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("TeacherId");
 
                     b.HasIndex("Email")
                         .IsUnique()
@@ -449,14 +460,18 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Domain.Models.SubjectTeaching", b =>
                 {
                     b.HasOne("Domain.Models.SchoolSubjects", "SchoolSubjects")
-                        .WithMany("SubjectTeaching")
+                        .WithMany()
                         .HasForeignKey("SchoolSubjectsId")
                         .IsRequired();
 
                     b.HasOne("Domain.Models.Teacher", "Teacher")
-                        .WithMany("SubjectTeaching")
-                        .HasForeignKey("SchoolSubjectsId")
+                        .WithMany()
+                        .HasForeignKey("SchoolTeacherId")
                         .IsRequired();
+
+                    b.HasOne("Domain.Models.Teacher", null)
+                        .WithMany("SubjectTeachings")
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("SchoolSubjects");
 
@@ -514,14 +529,9 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Models.SchoolSubjects", b =>
-                {
-                    b.Navigation("SubjectTeaching");
-                });
-
             modelBuilder.Entity("Domain.Models.Teacher", b =>
                 {
-                    b.Navigation("SubjectTeaching");
+                    b.Navigation("SubjectTeachings");
                 });
 #pragma warning restore 612, 618
         }

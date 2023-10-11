@@ -1,15 +1,9 @@
-﻿using Application.Posts.Commands;
-using Application.Posts.Queries;
-using Application.Authentication.Commands;
+﻿using Application.Authentication.Commands;
 using Domain.Models;
 using MediatR;
 using MinimalApi.Abstractions;
 using MinimalApi.Filiters;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using static Azure.Core.HttpHeader;
 using DataAccess.DataAccessException.AuthenticationException;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MinimalApi.EndpointDefinitions
 {
@@ -21,7 +15,6 @@ namespace MinimalApi.EndpointDefinitions
             auth.MapPost("/Register", CreateAccount)
                 .AddEndpointFilter<RegisterValidationFiliters>();
             auth.MapPost("/login", SignIn);
-
         }
         private async Task<IResult> SignIn(IMediator mediator, Login login)
         {

@@ -31,7 +31,7 @@ namespace MinimalApi.EndpointDefinitions
             {
                 AdminSettings = adminSetting
             });
-            return TypedResults.NoContent();
+            return TypedResults.Ok();
         }
 
         private async Task<IResult> UpdateAdminSettings(

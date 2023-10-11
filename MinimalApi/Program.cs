@@ -1,17 +1,14 @@
-using Application.Posts.Commands;
-using Application.Posts.Queries;
-using DataAccess.DataAccessException.AuthenticationException;
-using Domain.Models;
-using MediatR;
-using Microsoft.Extensions.Options;
 using MinimalApi.Extensions;
-using MinimalApi.OptionsSetup;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.RegisterServices();
+builder.Services.AddSwaggerGen();
 
+builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.RegisterExecption();
 
 app.UseCors(builder =>

@@ -55,6 +55,8 @@ namespace DataAccess.Repositories
         {
             try
             {
+                schoolSubjects.Subjects = schoolSubjects.Subjects?.Trim();
+                
                 var checkExist = _dbContext.SchoolSubjects.Any(x => x.Subjects!.ToLower() == schoolSubjects.Subjects!.ToLower());
                 if (checkExist)
                 {

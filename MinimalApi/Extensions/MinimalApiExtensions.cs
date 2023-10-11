@@ -11,8 +11,6 @@ using MinimalApi.OptionsSetup;
 using Infrastructure.Authentication;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using DataAccess.DataAccessException.AuthenticationException;
-using Microsoft.AspNetCore.Http;
 using DataAccess.DataAccessException;
 using Domain.Models;
 
@@ -54,6 +52,8 @@ namespace MinimalApi.Extensions
             services.AddScoped<IActiveSchoolTermRepository, ActiveSchoolTermRepository>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IJwtProvider, JwtProvider>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<ISubjectTeachingRepository, SubjectTeachingRepository>();
         }
 
         private static void ConfigureAuthentication(IServiceCollection services, WebApplicationBuilder builder)
@@ -115,7 +115,19 @@ namespace MinimalApi.Extensions
                     ctx.Response.StatusCode = 400;
                     await ctx.Response.WriteAsJsonAsync(errorResponse);
                 }
-                catch (Exception)
+                catch(ApplicationException e)
+                {
+                    var errorResponse = new ErrorResponse()
+                    {
+                        StatusCode = 400,
+                        StatusPharase = "Bad request",
+                        TimeStamp = DateTime.Now
+                    };
+                    errorResponse.Errors.Add(e.Message);
+                    ctx.Response.StatusCode = 400;
+                    await ctx.Response.WriteAsJsonAsync(errorResponse);
+                }
+                catch (Exception ex)
                 {
                     ctx.Response.StatusCode = 500;
                     await ctx.Response.WriteAsync("An error ocurred");

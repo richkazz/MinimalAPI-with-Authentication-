@@ -44,7 +44,6 @@ namespace MinimalApi.EndpointDefinitions
 
         private async Task<IResult> CreateSubject(IMediator mediator, SchoolSubjects subject)
         {
-           
             var createdSubject = await mediator.Send(new CreateSchoolSubjectsCommand { Subjects = subject.Subjects });
             return Results.CreatedAtRoute("GetSubjectById", new { createdSubject.Id }, createdSubject);
         }
