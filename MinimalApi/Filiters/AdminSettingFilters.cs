@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace MinimalApi.Filiters
+namespace MinimalApi.Filters
 {
     public class AdminSettingFilters : IEndpointFilter
     {

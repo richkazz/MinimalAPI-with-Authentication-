@@ -2,7 +2,7 @@
 using Domain.ViewModel;
 using Infrastructure.Mail;
 
-namespace MinimalApi.Filiters
+namespace MinimalApi.Filters
 {
     public class TeacherValidationFilters : IEndpointFilter
     {

@@ -2,9 +2,9 @@
 using Infrastructure.Mail;
 using System.Text.RegularExpressions;
 
-namespace MinimalApi.Filiters
+namespace MinimalApi.Filters
 {
-    public class RegisterValidationFiliters : IEndpointFilter
+    public class RegisterValidationFilters : IEndpointFilter
     {
         public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
         {

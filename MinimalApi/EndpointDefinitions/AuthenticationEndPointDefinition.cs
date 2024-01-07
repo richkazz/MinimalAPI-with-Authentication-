@@ -2,7 +2,7 @@
 using Domain.Models;
 using MediatR;
 using MinimalApi.Abstractions;
-using MinimalApi.Filiters;
+using MinimalApi.Filters;
 using DataAccess.DataAccessException.AuthenticationException;
 
 namespace MinimalApi.EndpointDefinitions
@@ -13,7 +13,7 @@ namespace MinimalApi.EndpointDefinitions
         {
             var auth = app.MapGroup("/api/auth");
             auth.MapPost("/Register", CreateAccount)
-                .AddEndpointFilter<RegisterValidationFiliters>();
+                .AddEndpointFilter<RegisterValidationFilters>();
             auth.MapPost("/login", SignIn);
         }
         private async Task<IResult> SignIn(IMediator mediator, Login login)

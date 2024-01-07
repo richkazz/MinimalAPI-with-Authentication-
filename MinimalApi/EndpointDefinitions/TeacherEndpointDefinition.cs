@@ -5,7 +5,7 @@ using Domain.Models;
 using Domain.ViewModel;
 using MediatR;
 using MinimalApi.Abstractions;
-using MinimalApi.Filiters;
+using MinimalApi.Filters;
 
 namespace MinimalApi.EndpointDefinitions
 {

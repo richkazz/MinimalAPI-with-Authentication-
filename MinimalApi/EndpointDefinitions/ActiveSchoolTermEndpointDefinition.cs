@@ -4,7 +4,7 @@ using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using MinimalApi.Abstractions;
-using MinimalApi.Filiters;
+using MinimalApi.Filters;
 
 namespace MinimalApi.EndpointDefinitions
 {

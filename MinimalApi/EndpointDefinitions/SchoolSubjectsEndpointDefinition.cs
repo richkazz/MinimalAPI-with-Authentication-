@@ -3,7 +3,7 @@ using Application.SchoolSubject.Queries;
 using Domain.Models;
 using MediatR;
 using MinimalApi.Abstractions;
-using MinimalApi.Filiters;
+using MinimalApi.Filters;
 
 namespace MinimalApi.EndpointDefinitions
 {

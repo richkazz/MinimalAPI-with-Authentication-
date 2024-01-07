@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
 using MinimalApi.Abstractions;
-using MinimalApi.Filiters;
+using MinimalApi.Filters;
 
 namespace MinimalApi.EndpointDefinitions
 {
@@ -17,10 +17,10 @@ namespace MinimalApi.EndpointDefinitions
             post.MapGet("/{id}", GetPostById)
                 .WithName("GetPostById");
             post.MapPost("/", CreatePost)
-                .AddEndpointFilter<PostValidationFiliters>();
+                .AddEndpointFilter<PostValidationFilters>();
             post.MapGet("/", GetAllPosts);
             post.MapPut("/{id}", UpdatePost)
-                .AddEndpointFilter<PostValidationFiliters>();
+                .AddEndpointFilter<PostValidationFilters>();
             post.MapDelete("/{id}", DeletePost);
         }
         [Authorize]

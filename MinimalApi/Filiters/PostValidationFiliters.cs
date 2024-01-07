@@ -1,9 +1,9 @@
 ﻿using Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MinimalApi.Filiters
+namespace MinimalApi.Filters
 {
-    public class PostValidationFiliters : IEndpointFilter
+    public class PostValidationFilters : IEndpointFilter
     {
         public async ValueTask<object?> InvokeAsync
             (EndpointFilterInvocationContext context,

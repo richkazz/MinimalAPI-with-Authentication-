@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MinimalApi.Filiters
+namespace MinimalApi.Filters
 {
     public class SchoolSubjectValidationFilter : IEndpointFilter
     {
