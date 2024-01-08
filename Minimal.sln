@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalApi", "MinimalApi\Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{9C55582F-585F-4DC4-8560-E223C45BAB66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminBlazor", "AdminBlazor\AdminBlazor.csproj", "{0A24F782-3B9D-44B9-8714-D79C7B961661}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminBlazor", "AdminBlazor\AdminBlazor.csproj", "{0A24F782-3B9D-44B9-8714-D79C7B961661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

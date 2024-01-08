@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Authentication;
+using DataAccess.DatabaseSeeder;
 
 namespace AdminBlazor
 {
@@ -38,6 +39,7 @@ namespace AdminBlazor
             services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<ISubjectTeachingRepository, SubjectTeachingRepository>();
+            services.AddTransient<ClassSeeder>();
         }
 
         private static void ConfigureAuthentication(IServiceCollection services, WebApplicationBuilder builder)

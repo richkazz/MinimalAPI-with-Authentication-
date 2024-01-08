@@ -57,85 +57,91 @@
                     </div>
                     <div class="input-field">
                         <label>Class</label>
-                        <InputSelect @bind-Value=studentDTOs.ClassInSchoolId required>
-                            <option disabled value="-1" selected>Select Class</option>
-                            @foreach (var item in classInSchools)
-                            {
-                                <option value="@item.Id">@item.ClassName</option>
-                            }
-                        </InputSelect>
+                        @if (classInSchools == null)
+                        {
+                            <select required>
+                                <option disabled value="-1" selected>Select Class</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <InputSelect @bind-Value=studentDTOs.ClassInSchoolId required>
+                                <option disabled value="0" selected>Select Class</option>
+                                @foreach (var item in classInSchools)
+                                {
+                                    <option value="@item.Id">@item.ClassName</option>
+                                }
+                            </InputSelect>
+                        }
                     </div>
 
                 </div>
             </div>
+            <div class="details ID">
+                <span class="title">Guardian Details</span>
 
-
-            <form Model="studentGuardianDTOs">
-                <div class="details ID">
-                    <span class="title">Guardian Details</span>
-
-                    <div class="fields">
-                        <div class="input-field">
-                            <label>First Name</label>
-                            <InputText @bind-Value=studentGuardianDTOs.FirstName type="text" placeholder="Enter your name" required></InputText>
-                        </div>
-                        <div class="input-field">
-                            <label>Last Name</label>
-                            <InputText @bind-Value=studentGuardianDTOs.LastName type="text" placeholder="Enter your name" required></InputText>
-                        </div>
-
-                        <div class="input-field">
-                            <label>Phone Number</label>
-                            <InputText @bind-Value=studentGuardianDTOs.PhoneNumber type="text" placeholder="Enter phone number" required></InputText>
-                        </div>
-
-                        <div class="input-field">
-                            <label>Status</label>
-                            <select required>
-                                <option disabled selected>Select Status</option>
-                                <option>Mrs</option>
-                                <option>Mr</option>
-                                <option>Miss</option>
-                                <option>master</option>
-                                <option>divorced</option>
-                                <option>widow or widower</option>
-                            </select>
-                        </div>
-                        <div class="input-field">
-                            <label>Relationship</label>
-                            <InputSelect @bind-Value=studentGuardianDTOs.Relationship required>
-                                <option disabled selected>Select Relationship</option>
-                                <option>Parent</option>
-                                <option>Guardian</option>
-                                <option>Sibling</option>
-
-                            </InputSelect>
-                        </div>
-
-                        <div class="input-field">
-                            <label>Occupation</label>
-                            <InputText @bind-Value=studentGuardianDTOs.Occupation type="text" placeholder="Enter Occupation" required></InputText>
-                        </div>
+                <div class="fields">
+                    <div class="input-field">
+                        <label>First Name</label>
+                        <InputText @bind-Value=studentDTOs.StudentGuardianDTOs.FirstName type="text" placeholder="Enter your name" required></InputText>
+                    </div>
+                    <div class="input-field">
+                        <label>Last Name</label>
+                        <InputText @bind-Value=studentDTOs.StudentGuardianDTOs.LastName type="text" placeholder="Enter your name" required></InputText>
                     </div>
 
-                    <button class="nextBtn">
-                        <a href="reg.html" style="text-decoration: none;color: white;">Next</a>
+                    <div class="input-field">
+                        <label>Phone Number</label>
+                        <InputText @bind-Value=studentDTOs.StudentGuardianDTOs.PhoneNumber type="text" placeholder="Enter phone number" required></InputText>
+                    </div>
 
-                    </button>
+                    <div class="input-field">
+                        <label>Status</label>
+                        <InputSelect @bind-Value=studentDTOs.StudentGuardianDTOs.Status required>
+                            <option disabled selected>Select Status</option>
+                            <option>Mrs</option>
+                            <option>Mr</option>
+                            <option>Miss</option>
+                            <option>master</option>
+                            <option>divorced</option>
+                            <option>widow or widower</option>
+                        </InputSelect>
+                    </div>
+                    <div class="input-field">
+                        <label>Relationship</label>
+                        <InputSelect @bind-Value=studentDTOs.StudentGuardianDTOs.Relationship required>
+                            <option disabled value="Select Relationship" selected>Select Relationship</option>
+                            <option value="Parent">Parent</option>
+                            <option value="Guardian">Guardian</option>
+                            <option value="Sibling">Sibling</option>
+
+                        </InputSelect>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Occupation</label>
+                        <InputText @bind-Value=studentDTOs.StudentGuardianDTOs.Occupation type="text" placeholder="Enter Occupation" required></InputText>
+                    </div>
                 </div>
-            </form>
+
+                <button class="nextBtn">
+                    <a href="reg.html" style="text-decoration: none;color: white;">Next</a>
+
+                </button>
+            </div>
         </EditForm>
+
     </div>
 </div>
 
 @code {
-    private StudentDTOs studentDTOs;
-    private StudentGuardianDTOs studentGuardianDTOs;
+    private StudentDTOs studentDTOs = new StudentDTOs();
     private List<ClassInSchool>? classInSchools;
+    private EditContext editContext;
     protected override async Task OnInitializedAsync()
     {
+        editContext = new EditContext(studentDTOs);
         classInSchools = await Mediaror.Send(new GetClassesInSchoolQuery());
         studentDTOs = new StudentDTOs();
-        studentGuardianDTOs = new StudentGuardianDTOs();
     }
 }

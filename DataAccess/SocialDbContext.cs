@@ -2,12 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess
 {
@@ -17,7 +11,7 @@ namespace DataAccess
         {
 
         }
-        
+
         public DbSet<Post> Posts { get; set; }
         public DbSet<ActiveSchoolTerm> ActiveSchoolTerms { get; set; }
         public DbSet<SchoolSubjects> SchoolSubjects { get; set; }
@@ -76,20 +70,20 @@ namespace DataAccess
         {
 
             entity.HasOne(d => d.SchoolSubjects)
-                 .WithMany(f=>f.SubjectTeaching)
+                 .WithMany(f => f.SubjectTeaching)
                  .HasForeignKey(d => d.SchoolSubjectsId)
                  .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Teacher)
-                 .WithMany(f=>f.SubjectTeaching)
+                 .WithMany(f => f.SubjectTeaching)
                  .HasForeignKey(d => d.SchoolSubjectsId)
                  .OnDelete(DeleteBehavior.ClientSetNull);
 
-            
+
         }
 
         private void ConfigureJuniorSchoolSubject(EntityTypeBuilder<JuniorSchoolSubject> entity)
-         {
+        {
             entity.HasOne(d => d.SchoolSubjects)
                  .WithMany()
                  .HasForeignKey(d => d.SubjectId)

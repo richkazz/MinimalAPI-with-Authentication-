@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DataAccess.DataAccessException;
 using Domain.Models;
+using DataAccess.DatabaseSeeder;
 
 namespace MinimalApi.Extensions
 {
@@ -54,6 +55,7 @@ namespace MinimalApi.Extensions
             services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<ISubjectTeachingRepository, SubjectTeachingRepository>();
+            services.AddTransient<ClassSeeder>();
         }
 
         private static void ConfigureAuthentication(IServiceCollection services, WebApplicationBuilder builder)
@@ -79,7 +81,7 @@ namespace MinimalApi.Extensions
                });
             services.ConfigureOptions<JwtOptionSetup>();
             services.ConfigureOptions<JwtBearerOptionSetup>();
-            
+
             services.AddAuthorization();
         }
         public static void RegisterEndPointDefinitions(this WebApplication app)
@@ -89,7 +91,7 @@ namespace MinimalApi.Extensions
                 .Select(Activator.CreateInstance)
                 .Cast<IEndpointDefinition>();
 
-            foreach(var endpointDef in endPointDefinitions)
+            foreach (var endpointDef in endPointDefinitions)
             {
                 endpointDef.RegisterEndpoints(app);
             }
@@ -115,7 +117,7 @@ namespace MinimalApi.Extensions
                     ctx.Response.StatusCode = 400;
                     await ctx.Response.WriteAsJsonAsync(errorResponse);
                 }
-                catch(ApplicationException e)
+                catch (ApplicationException e)
                 {
                     var errorResponse = new ErrorResponse()
                     {
