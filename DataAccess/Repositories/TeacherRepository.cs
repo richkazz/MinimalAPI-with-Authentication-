@@ -32,13 +32,10 @@ namespace DataAccess.Repositories
                 await _dbContext.Teachers.AddAsync(teacher);
                 await _dbContext.SaveChangesAsync();
 
-                if (teacher == null) throw new ArgumentNullException();
-                if (teacherViewModels.SubjectTeachingList == null || !teacherViewModels.SubjectTeachingList.Any()) return teacher;
+                //if (teacherViewModels.SubjectTeachingList == null || !teacherViewModels.SubjectTeachingList.Any()) return teacher;
 
-                
-                
-                await _subjectTeachingRepository.AddRangeAsync(teacherViewModels.SubjectTeachingList!);
-                
+                //await _subjectTeachingRepository.AddRangeAsync(teacherViewModels.SubjectTeachingList!);
+
                 await transaction.CommitAsync();
                 _logger.LogInformation($"Created teacher with Id {teacher.Id}");
                 return teacher;
@@ -59,11 +56,11 @@ namespace DataAccess.Repositories
         {
             try
             {
-                var z = await _dbContext.SubjectTeachings.Where(y => y.SchoolTeacherId == 3).ToListAsync();
                 _logger.LogInformation("Getting all teachers");
                 var teachers = await _dbContext.Teachers
-                 .Include(x => x.SubjectTeaching).ThenInclude(x=>x.SchoolSubjects)
+                 .Include(x => x.SubjectTeaching).ThenInclude(x => x.SchoolSubjects)
                  .ToListAsync();
+                _logger.LogInformation($"Gotten {teachers.Count} teachers");
                 return teachers;
             }
             catch (Exception ex)
@@ -105,7 +102,7 @@ namespace DataAccess.Repositories
                 if (teacher == null) throw new ArgumentNullException();
                 if (teacherViewModels.SubjectTeachingList == null || !teacherViewModels.SubjectTeachingList.Any()) return teacher;
 
-                
+
                 await _subjectTeachingRepository.UpdateRangeAsync(teacherViewModels.SubjectTeachingList!);
 
                 _logger.LogInformation($"Updated teacher with Id {teacher.Id}");

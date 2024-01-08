@@ -3,7 +3,7 @@ namespace Domain.Models
 {
     public class Teacher
     {
-       public Teacher()
+        public Teacher()
         {
             SubjectTeaching = new HashSet<SubjectTeaching>();
         }

@@ -1,7 +1,6 @@
 ﻿using Application.Abstractions;
 using DataAccess.DataAccessException;
 using Domain.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DataAccess.Repositories
@@ -34,7 +33,7 @@ namespace DataAccess.Repositories
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                if(adminSetting == null)
+                if (adminSetting == null)
                 {
                     throw new AdminSettingException("Empty");
                 }
@@ -62,7 +61,7 @@ namespace DataAccess.Repositories
                 await transaction.DisposeAsync();
             }
         }
-       
+
         public async Task<AdminSetting?> GetAdminSettingAsync()
         {
             try
@@ -103,7 +102,7 @@ namespace DataAccess.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating admin settings");
-                throw new AdminSettingException("Error updating admin settings",ex);
+                throw new AdminSettingException("Error updating admin settings", ex);
             }
             finally
             {

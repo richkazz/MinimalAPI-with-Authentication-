@@ -1,0 +1,37 @@
+﻿.overview-row-content {
+    background-color: white;
+    border-radius: 30px;
+    padding: 10px 20px 5px 5px;
+    padding-left: 20px;
+}
+
+.min-height {
+    min-height: 200px
+}
+
+.margin-to-section-3 {
+    margin-left: 3px;
+    margin-bottom: 10px;
+}
+
+.add-new-button {
+    text-decoration: none;
+    margin-right: -20px;
+}
+
+    .add-new-button:hover {
+        text-decoration: underline;
+    }
+
+.bold-content {
+    font-weight: 500;
+}
+
+.add-margin-to-overview {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.section-2 {
+    margin-right: 5px;
+}

@@ -1,9 +1,9 @@
 ﻿@page "/AllStudents"
-@rendermode InteractiveServer
 @using Domain.Models
 @using Application.TeacherMediatR.Queries
 @inject MediatR.IMediator Mediaror
 @inject NavigationManager NavManager
+@attribute [StreamRendering]
 
 <PageTitle>All Teachers</PageTitle>
 
@@ -29,11 +29,9 @@
                                 <h6>Teachers</h6>
                             </div>
                             <div class="col-auto">
-                                <button class="btn btn-dark" @onclick="NavigateToAddTeacherPage">Add Teacher</button>
+                                <a href="CreateStaff" class="btn btn-dark" @onclick="NavigateToAddTeacherPage">Add Teacher</a>
                             </div>
                         </div>
-
-
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">

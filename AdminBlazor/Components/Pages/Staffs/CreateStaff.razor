@@ -1,9 +1,10 @@
 ﻿@page "/CreateStaff"
-@rendermode InteractiveServer
 @using Domain.ViewModel
 @using Domain.Models
 @using Application.TeacherMediatR.Commands
 @inject MediatR.IMediator Mediaror
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
 
 <PageTitle>Staff Registration</PageTitle>
 <div class="container-fluid">
@@ -24,7 +25,7 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="validationCustom02">Last name</label>
-                        <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+                        <input type="text" class="form-control" @bind-value="@TeacherViewModel.LastName" id="validationCustom02" placeholder="Last name" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -35,36 +36,81 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="inputGroupPrepend">@@</span>
                             </div>
-                            <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
+                            <input type="email" class="form-control" @bind-value="@TeacherViewModel.Email" id="validationCustomUsername" placeholder="Email" aria-describedby="inputGroupPrepend" required>
                             <div class="invalid-feedback">
                                 Please choose a username.
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="validationCustom03">City</label>
-                        <input type="text" class="form-control" id="validationCustom03" placeholder="City" required>
+                        <label>Gender</label>
+                        <select @bind="@TeacherViewModel.Gender" class="form-select" aria-label="Gender" required>
+                            <option value="">Open this select menu</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                         <div class="invalid-feedback">
-                            Please provide a valid city.
+                            Please select your gender.
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="validationCustom04">State</label>
-                        <input type="text" class="form-control" id="validationCustom04" placeholder="State" required>
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom04">Qualification</label>
+                        <input type="text" class="form-control" @bind-value="@TeacherViewModel.Qualification" id="validationCustom04" placeholder="State" required>
                         <div class="invalid-feedback">
-                            Please provide a valid state.
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="validationCustom05">Zip</label>
-                        <input type="text" class="form-control" id="validationCustom05" placeholder="Zip" required>
-                        <div class="invalid-feedback">
-                            Please provide a valid zip.
+                            Please provide a valid qualification.
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom05">Phone Number</label>
+                        <input type="tel" class="form-control" @bind-value="@TeacherViewModel.PhoneNumber" id="validationCustom05" placeholder="Phone Number" required>
+                        <div class="invalid-feedback">
+                            Please provide a valid phone number.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom06">Next of Kin Name</label>
+                        <input type="text" class="form-control" @bind-value="@TeacherViewModel.NextOfKinName" id="validationCustom06" placeholder="Next of Kin Name" required>
+                        <div class="invalid-feedback">
+                            Please provide the next of kin's name.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom07">Next of Kin Number</label>
+                        <input type="tel" class="form-control" @bind-value="@TeacherViewModel.NextOfkinNumber" id="validationCustom07" placeholder="Next of Kin Number" required>
+                        <div class="invalid-feedback">
+                            Please provide a valid phone number for the next of kin.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom08">Address</label>
+                        <textarea class="form-control" @bind="@TeacherViewModel.Address" id="validationCustom08" placeholder="Address" required></textarea>
+                        <div class="invalid-feedback">
+                            Please provide a valid address.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom09">Date Employed</label>
+                        <input type="date" class="form-control" @bind-value="@TeacherViewModel.DateEmployed" id="validationCustom09" placeholder="Date Employed" required>
+                        <div class="invalid-feedback">
+                            Please provide the date of employment.
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
@@ -76,7 +122,18 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" type="button" @onclick="HandleSubmit">Submit form</button>
+                <button class="btn btn-primary" type="button" @onclick="HandleSubmit">
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        <span role="status">Loading...</span>
+                    }
+                    else
+                    {
+                        <span>Submit form</span>
+                    }
+
+                </button>
             </form>
 
         </div>
@@ -89,20 +146,45 @@
 @code {
     private TeacherViewModel TeacherViewModel = new TeacherViewModel();
     private string notValidFormClassName = "";
+    private EditContext? formEditContext;
+    private bool isLoading = false;
     protected override async Task OnInitializedAsync()
     {
-        var status = await Mediaror.Send(new CreateTeacherCommand() { TeacherViewModels = TeacherViewModel });
-
+        formEditContext = new EditContext(TeacherViewModel);
     }
     async Task HandleSubmit()
     {
-        if (string.IsNullOrWhiteSpace(TeacherViewModel.FirstName))
+
+        if (string.IsNullOrWhiteSpace(TeacherViewModel?.FirstName) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.LastName) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.Email) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.Gender) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.Qualification) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.PhoneNumber) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.NextOfKinName) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.NextOfkinNumber) ||
+            string.IsNullOrWhiteSpace(TeacherViewModel?.Address))
         {
-            notValidFormClassName = "was-validated";
-            StateHasChanged();
+            notValid();
             return;
         }
         notValidFormClassName = "";
+        isLoading = true;
+        var teacher = await Mediaror.Send(new CreateTeacherCommand() { TeacherViewModels = TeacherViewModel });
 
+        if (teacher is not null)
+        {
+            NavigateToAddTeacherPage();
+        }
+        isLoading = false;
+    }
+    void notValid()
+    {
+        notValidFormClassName = "was-validated";
+        StateHasChanged();
+    }
+    private void NavigateToAddTeacherPage()
+    {
+        NavManager.NavigateTo("AllStudents");
     }
 }
