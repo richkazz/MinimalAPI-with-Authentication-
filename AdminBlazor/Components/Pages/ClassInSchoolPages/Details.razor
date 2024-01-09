@@ -1,0 +1,45 @@
+﻿@page "/classinschools/details"
+@inject DataAccess.SocialDbContext DB
+@using Domain.Models
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>ClassInSchool</h4>
+    <hr />
+    @if (classinschool is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">ClassName</dt>
+            <dd class="col-sm-10">@classinschool.ClassName</dd>
+        </dl>
+        <div>
+            <a href="@($"/classinschools/edit?id={classinschool.Id}")">Edit</a> |
+            <a href="@($"/classinschools")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    ClassInSchool? classinschool;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        classinschool = await DB.ClassInSchools.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (classinschool is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

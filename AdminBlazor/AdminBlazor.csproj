@@ -13,11 +13,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Components\Pages\ClassInSchoolPages\Create.razor" />
+    <None Include="Components\Pages\ClassInSchoolPages\Delete.razor" />
+    <None Include="Components\Pages\ClassInSchoolPages\Details.razor" />
+    <None Include="Components\Pages\ClassInSchoolPages\Edit.razor" />
+    <None Include="Components\Pages\ClassInSchoolPages\Index.razor" />
     <None Include="Components\Pages\StudentRegisteration\StudentGuardianRegisteration.razor" />
   </ItemGroup>
 

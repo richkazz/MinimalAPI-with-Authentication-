@@ -15,11 +15,17 @@ namespace AdminBlazor
         public static void RegisterServices(this WebApplicationBuilder builder)
         {
 
-            var cs = builder.Configuration.GetConnectionString("DefaultConnection");
+            var cs = builder.Environment.IsDevelopment()
+                ? builder.Configuration.GetConnectionString("DefaultConnection")
+                : Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            
             builder.Services.AddDbContext<SocialDbContext>(opt => opt.UseSqlServer(cs));
+            builder.Services.AddQuickGridEntityFrameworkAdapter(); ;
+
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<SocialDbContext>()
                 .AddDefaultTokenProviders();
+
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreatePost).GetTypeInfo().Assembly));
             RegisterRepositories(builder.Services);
             ConfigureAuthentication(builder.Services, builder);

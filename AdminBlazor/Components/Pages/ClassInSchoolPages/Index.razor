@@ -1,0 +1,22 @@
+﻿@page "/classinschools"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject DataAccess.SocialDbContext DB
+@using Domain.Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="classinschools/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.ClassInSchools">
+    <PropertyColumn Property="classinschool => classinschool.ClassName" />
+
+    <TemplateColumn Context="classinschool">
+        <a href="@($"classinschools/edit?id={classinschool.Id}")">Edit</a> |
+        <a href="@($"classinschools/details?id={classinschool.Id}")">Details</a> |
+        <a href="@($"classinschools/delete?id={classinschool.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
